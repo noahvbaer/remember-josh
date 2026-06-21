@@ -144,9 +144,6 @@
       <label>Phone number</label>
       <input type="tel" id="phone" autocomplete="tel" placeholder="So Noah can reach out and thank you" />
 
-      <label>How did you know my dad? <span class="opt">(optional)</span></label>
-      <input type="text" id="relationship" placeholder="A founder he backed, a friend, a colleague&hellip;" />
-
       <label>Share your story</label>
       <div class="tabs" role="tablist">
         <div class="tab" data-tab="video" role="tab" aria-selected="true"><span class="ic">🎥</span>Video</div>
@@ -315,7 +312,6 @@ form.addEventListener('submit', async (e) => {
   const firstName = document.getElementById('firstName').value.trim();
   const lastName = document.getElementById('lastName').value.trim();
   const phone = document.getElementById('phone').value.trim();
-  const relationship = document.getElementById('relationship').value.trim();
   const text = document.getElementById('text').value.trim();
 
   if(!firstName || !lastName || !phone){
@@ -351,7 +347,6 @@ form.addEventListener('submit', async (e) => {
       last_name: lastName,
       phone: phone,
       name: firstName + ' ' + lastName,
-      relationship: relationship || null,
       kind,
       message: text || null,
       file_path: filePath,
