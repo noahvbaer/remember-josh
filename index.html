@@ -52,6 +52,8 @@
   }
   textarea{min-height:120px;resize:vertical}
   input:focus,textarea:focus{outline:none;border-color:var(--green)}
+  .row{display:flex;gap:10px}
+  .col{flex:1;min-width:0}
   .tabs{display:flex;gap:8px;margin:6px 0 4px}
   .tab{
     flex:1; text-align:center; padding:11px 8px; border:1px solid var(--line);
@@ -91,8 +93,9 @@
   .thanks h2{font-family:Georgia,serif;color:var(--green-d);font-size:26px;margin:6px 0 8px}
   .thanks p{color:#41463b;max-width:42ch;margin:0 auto}
   .thanks .again{display:inline-block;margin-top:16px;color:var(--green-d);font-weight:700;cursor:pointer;text-decoration:underline}
-  .err{display:none;background:#fbeaea;color:#8a3b3b;border-radius:10px;padding:11px 13px;font-size:14px;margin-top:14px}
+  .err{display:none;background:#fbeaea;color:#8a3b3b;border-radius:10px;padding:13px 15px;font-size:14.5px;line-height:1.5;margin-top:14px}
   .err.show{display:block}
+  .err a{color:#8a3b3b;font-weight:700}
   footer{text-align:center;color:var(--muted);font-size:13px;margin-top:34px}
 </style>
 </head>
@@ -127,8 +130,19 @@
 
   <form class="card" id="form" autocomplete="on">
     <div id="fields">
-      <label>Your name <span class="opt">(optional)</span></label>
-      <input type="text" id="name" placeholder="So I know who this story is from" />
+      <div class="row">
+        <div class="col">
+          <label>First name</label>
+          <input type="text" id="firstName" autocomplete="given-name" placeholder="First" />
+        </div>
+        <div class="col">
+          <label>Last name</label>
+          <input type="text" id="lastName" autocomplete="family-name" placeholder="Last" />
+        </div>
+      </div>
+
+      <label>Phone number</label>
+      <input type="tel" id="phone" autocomplete="tel" placeholder="So Noah can reach out and thank you" />
 
       <label>How did you know my dad? <span class="opt">(optional)</span></label>
       <input type="text" id="relationship" placeholder="A founder he backed, a friend, a colleague&hellip;" />
@@ -298,9 +312,16 @@ form.addEventListener('submit', async (e) => {
     return;
   }
 
-  const name = document.getElementById('name').value.trim();
+  const firstName = document.getElementById('firstName').value.trim();
+  const lastName = document.getElementById('lastName').value.trim();
+  const phone = document.getElementById('phone').value.trim();
   const relationship = document.getElementById('relationship').value.trim();
   const text = document.getElementById('text').value.trim();
+
+  if(!firstName || !lastName || !phone){
+    showErr('Please add your first name, last name, and phone number so Noah knows who to thank.');
+    return;
+  }
 
   let file = mode === 'video' ? videoFile : mode === 'audio' ? audioFile : null;
   if(!file && !text){
@@ -326,7 +347,10 @@ form.addEventListener('submit', async (e) => {
       pct.textContent = 'Finishing…';
     }
     await insertRow({
-      name: name || null,
+      first_name: firstName,
+      last_name: lastName,
+      phone: phone,
+      name: firstName + ' ' + lastName,
       relationship: relationship || null,
       kind,
       message: text || null,
@@ -338,9 +362,11 @@ form.addEventListener('submit', async (e) => {
     document.getElementById('thanks').style.display = 'block';
     window.scrollTo({top:0, behavior:'smooth'});
   }catch(err){
-    showErr((err && err.message ? err.message : 'Something went wrong') + ' — please try again, or email Noah if it keeps happening.');
+    errEl.innerHTML = '⚠️ <strong>Your story didn’t upload — it was not saved.</strong> Please don’t lose it: email your video or message straight to <a href="mailto:noah@baer5.com?subject=A%20story%20about%20Josh">noah@baer5.com</a> and Noah will add it himself. You can also tap “Send” to try again.';
+    errEl.classList.add('show');
     submitBtn.disabled = false; submitBtn.textContent = 'Send my story to Noah';
     progress.classList.remove('show');
+    errEl.scrollIntoView({behavior:'smooth', block:'center'});
   }
 });
 
