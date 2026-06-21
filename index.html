@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Remember Josh</title>
+<meta name="description" content="Share a story about Joshua Baer for his family." />
+<meta property="og:title" content="Remember Josh" />
+<meta property="og:description" content="Plant lots of seeds, water everyone's, repeat. Share a memory of Joshua Baer for his family." />
+<style>
+  :root{
+    --bg:#faf8f3; --ink:#23271f; --muted:#6b6f63; --green:#3f6b42; --green-d:#2f5232;
+    --line:#e6e1d6; --card:#ffffff; --gold:#b9985a;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--bg); color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.55; -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:640px;margin:0 auto;padding:32px 20px 64px}
+  .sprout{display:block;margin:8px auto 18px;width:46px;height:46px;opacity:.9}
+  .kicker{text-align:center;letter-spacing:.18em;text-transform:uppercase;font-size:12px;color:var(--muted);margin:0 0 6px}
+  h1{
+    font-family:Georgia,"Times New Roman",serif; font-weight:600;
+    text-align:center; font-size:clamp(30px,7vw,44px); line-height:1.15; margin:0 0 4px;
+  }
+  .dates{text-align:center;color:var(--muted);font-size:15px;margin:0 0 28px}
+  .quote{
+    font-family:Georgia,serif; font-style:italic; text-align:center;
+    font-size:clamp(20px,4.6vw,27px); color:var(--green-d); line-height:1.4;
+    margin:26px auto 30px; max-width:30ch;
+  }
+  .quote .mark{color:var(--gold)}
+  .lead{font-size:17px;color:#41463b;text-align:center;margin:0 auto 8px;max-width:46ch}
+  .lead.small{font-size:15px;color:var(--muted)}
+  .card{
+    background:var(--card); border:1px solid var(--line); border-radius:18px;
+    padding:22px 20px; margin:30px 0 0; box-shadow:0 1px 0 rgba(0,0,0,.02);
+  }
+  label{display:block;font-size:14px;font-weight:600;color:#3a3f34;margin:14px 0 6px}
+  label .opt{font-weight:400;color:var(--muted)}
+  input[type=text],textarea{
+    width:100%; border:1px solid var(--line); border-radius:12px; padding:13px 14px;
+    font-size:16px; font-family:inherit; background:#fcfbf8; color:var(--ink);
+  }
+  textarea{min-height:120px;resize:vertical}
+  input:focus,textarea:focus{outline:none;border-color:var(--green)}
+  .tabs{display:flex;gap:8px;margin:6px 0 4px}
+  .tab{
+    flex:1; text-align:center; padding:11px 8px; border:1px solid var(--line);
+    border-radius:12px; background:#fcfbf8; cursor:pointer; font-size:14px; font-weight:600; color:#4a4f42;
+    user-select:none;
+  }
+  .tab[aria-selected=true]{border-color:var(--green);background:#eef3ea;color:var(--green-d)}
+  .tab .ic{display:block;font-size:20px;margin-bottom:2px}
+  .pane{display:none;margin-top:14px}
+  .pane.active{display:block}
+  .drop{
+    border:2px dashed #cfd6c4; border-radius:14px; padding:26px 16px; text-align:center;
+    background:#fbfdf9; cursor:pointer;
+  }
+  .drop:active{background:#f1f5ec}
+  .drop .big{font-size:34px;line-height:1;margin-bottom:8px}
+  .drop .t{font-weight:700;color:var(--green-d);font-size:16px}
+  .drop .s{color:var(--muted);font-size:13px;margin-top:4px}
+  .hidden-file{position:absolute;width:1px;height:1px;opacity:0;overflow:hidden}
+  .chosen{margin-top:12px;font-size:14px;color:#3a3f34;background:#eef3ea;border-radius:10px;padding:10px 12px;display:none}
+  .chosen.show{display:block}
+  video.preview,audio.preview{width:100%;margin-top:12px;border-radius:12px;display:none;background:#000}
+  audio.preview{background:transparent}
+  .btn{
+    -webkit-appearance:none;appearance:none;border:none;cursor:pointer;
+    display:block;width:100%;margin-top:22px;padding:16px;border-radius:14px;
+    background:var(--green);color:#fff;font-size:17px;font-weight:700;
+  }
+  .btn:disabled{background:#b9c2b1;cursor:not-allowed}
+  .btn.rec{background:#8a3b3b;margin-top:14px}
+  .progress{display:none;margin-top:16px}
+  .progress.show{display:block}
+  .bar{height:10px;background:#e9e6dd;border-radius:99px;overflow:hidden}
+  .bar > i{display:block;height:100%;width:0;background:var(--green);transition:width .2s}
+  .pct{font-size:13px;color:var(--muted);text-align:center;margin-top:6px}
+  .note{font-size:13px;color:var(--muted);text-align:center;margin-top:14px}
+  .thanks{display:none;text-align:center;padding:18px 6px}
+  .thanks h2{font-family:Georgia,serif;color:var(--green-d);font-size:26px;margin:6px 0 8px}
+  .thanks p{color:#41463b}
+  .thanks .again{display:inline-block;margin-top:14px;color:var(--green-d);font-weight:700;cursor:pointer;text-decoration:underline}
+  .err{display:none;background:#fbeaea;color:#8a3b3b;border-radius:10px;padding:11px 13px;font-size:14px;margin-top:14px}
+  .err.show{display:block}
+  footer{text-align:center;color:var(--muted);font-size:13px;margin-top:34px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <svg class="sprout" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path d="M24 44V20" stroke="#3f6b42" stroke-width="2.4" stroke-linecap="round"/>
+    <path d="M24 24c0-6-5-11-12-12 0 7 5 12 12 12Z" fill="#cfe0c4" stroke="#3f6b42" stroke-width="2"/>
+    <path d="M24 20c0-6 5-10 12-11 0 7-5 11-12 11Z" fill="#bcd6ad" stroke="#3f6b42" stroke-width="2"/>
+    <circle cx="24" cy="45" r="1.6" fill="#b9985a"/>
+  </svg>
+
+  <p class="kicker">In loving memory</p>
+  <h1>Joshua Baer</h1>
+  <p class="dates" id="dates"></p>
+
+  <p class="quote">&ldquo;<span class="mark"></span>Plant lots of seeds, water everyone&rsquo;s, repeat.&rdquo;</p>
+
+  <p class="lead">Josh touched more lives than any of us will ever fully know. If he planted a seed in yours, his family would love to hear the story.</p>
+  <p class="lead small">Record a short video (a memory, a moment, a thank-you), or leave audio or a written note. It goes privately to his family. There&rsquo;s no wrong way to do this.</p>
+
+  <form class="card" id="form" autocomplete="on">
+    <div id="fields">
+      <label>Your name <span class="opt">(optional)</span></label>
+      <input type="text" id="name" placeholder="So his family knows who shared this" />
+
+      <label>How did you know Josh? <span class="opt">(optional)</span></label>
+      <input type="text" id="relationship" placeholder="Friend, colleague, neighbor, family&hellip;" />
+
+      <label>Share your story</label>
+      <div class="tabs" role="tablist">
+        <div class="tab" data-tab="video" role="tab" aria-selected="true"><span class="ic">🎥</span>Video</div>
+        <div class="tab" data-tab="audio" role="tab" aria-selected="false"><span class="ic">🎤</span>Audio</div>
+        <div class="tab" data-tab="text"  role="tab" aria-selected="false"><span class="ic">✍️</span>Write</div>
+      </div>
+
+      <!-- VIDEO -->
+      <div class="pane active" id="pane-video">
+        <label class="drop" for="videoFile">
+          <span class="big">🎥</span>
+          <span class="t">Tap to record or choose a video</span>
+          <span class="s">Your phone will let you film a new one or pick one you&rsquo;ve already taken</span>
+        </label>
+        <input class="hidden-file" type="file" id="videoFile" accept="video/*" />
+        <div class="chosen" id="videoChosen"></div>
+        <video class="preview" id="videoPreview" controls playsinline></video>
+      </div>
+
+      <!-- AUDIO -->
+      <div class="pane" id="pane-audio">
+        <label class="drop" for="audioFile">
+          <span class="big">🎤</span>
+          <span class="t">Tap to record or choose audio</span>
+          <span class="s">A voice memo works beautifully</span>
+        </label>
+        <input class="hidden-file" type="file" id="audioFile" accept="audio/*" />
+        <div class="chosen" id="audioChosen"></div>
+        <audio class="preview" id="audioPreview" controls></audio>
+      </div>
+
+      <!-- TEXT -->
+      <div class="pane" id="pane-text">
+        <textarea id="text" placeholder="Tell the story here&hellip; a memory, something he said, a way he showed up for you."></textarea>
+      </div>
+
+      <button type="submit" class="btn" id="submit">Send to his family</button>
+      <div class="progress" id="progress"><div class="bar"><i id="barFill"></i></div><div class="pct" id="pct">Uploading&hellip;</div></div>
+      <div class="err" id="err"></div>
+      <p class="note">Private &amp; for his family only. Large videos may take a minute on slower connections &mdash; please keep this page open until it finishes.</p>
+    </div>
+
+    <div class="thanks" id="thanks">
+      <div class="big" style="font-size:40px">🌱</div>
+      <h2>Thank you.</h2>
+      <p>Your story is on its way to Josh&rsquo;s family. It means more than you know.</p>
+      <span class="again" id="again">Share another story</span>
+    </div>
+  </form>
+
+  <footer>Made with love for Joshua Baer&rsquo;s family.</footer>
+</div>
+
+<script>
+/* ───────── CONFIG (filled in after Supabase is set up) ───────── */
+const CONFIG = {
+  SUPABASE_URL: "__SUPABASE_URL__",
+  SUPABASE_ANON: "__SUPABASE_ANON__",
+  BUCKET: "stories",
+  DATES: "" // e.g. "1971 — 2026"; leave "" to hide
+};
+/* ──────────────────────────────────────────────────────────── */
+
+if (CONFIG.DATES) document.getElementById('dates').textContent = CONFIG.DATES;
+
+// Tabs
+const tabs = [...document.querySelectorAll('.tab')];
+let mode = 'video';
+tabs.forEach(t => t.addEventListener('click', () => {
+  mode = t.dataset.tab;
+  tabs.forEach(x => x.setAttribute('aria-selected', x === t));
+  document.querySelectorAll('.pane').forEach(p => p.classList.remove('active'));
+  document.getElementById('pane-' + mode).classList.add('active');
+}));
+
+// File pickers + previews
+let videoFile = null, audioFile = null;
+function fmtSize(b){ return b > 1e6 ? (b/1e6).toFixed(1)+' MB' : Math.round(b/1e3)+' KB'; }
+function hookFile(inputId, chosenId, previewId, kind){
+  const input = document.getElementById(inputId);
+  input.addEventListener('change', () => {
+    const f = input.files[0];
+    if(!f) return;
+    if(kind==='video') videoFile = f; else audioFile = f;
+    const chosen = document.getElementById(chosenId);
+    chosen.textContent = '✓ ' + f.name + ' (' + fmtSize(f.size) + ')';
+    chosen.classList.add('show');
+    const prev = document.getElementById(previewId);
+    prev.src = URL.createObjectURL(f); prev.style.display = 'block';
+  });
+}
+hookFile('videoFile','videoChosen','videoPreview','video');
+hookFile('audioFile','audioChosen','audioPreview','audio');
+
+const form = document.getElementById('form');
+const errEl = document.getElementById('err');
+function showErr(m){ errEl.textContent = m; errEl.classList.add('show'); }
+function clearErr(){ errEl.classList.remove('show'); }
+
+function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,8); }
+function extOf(name, fallback){ const m = (name||'').match(/\.([a-z0-9]+)$/i); return m ? m[1].toLowerCase() : fallback; }
+
+function uploadToStorage(file, path, onProgress){
+  return new Promise((resolve, reject) => {
+    const url = CONFIG.SUPABASE_URL + '/storage/v1/object/' + CONFIG.BUCKET + '/' + path;
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', url, true);
+    xhr.setRequestHeader('apikey', CONFIG.SUPABASE_ANON);
+    xhr.setRequestHeader('authorization', 'Bearer ' + CONFIG.SUPABASE_ANON);
+    xhr.setRequestHeader('x-upsert', 'false');
+    xhr.setRequestHeader('content-type', file.type || 'application/octet-stream');
+    xhr.upload.onprogress = e => { if(e.lengthComputable) onProgress(e.loaded / e.total); };
+    xhr.onload = () => (xhr.status >= 200 && xhr.status < 300) ? resolve(path)
+      : reject(new Error('Upload failed (' + xhr.status + '). ' + xhr.responseText));
+    xhr.onerror = () => reject(new Error('Network error during upload.'));
+    xhr.send(file);
+  });
+}
+
+function insertRow(row){
+  return fetch(CONFIG.SUPABASE_URL + '/rest/v1/stories', {
+    method:'POST',
+    headers:{
+      'apikey': CONFIG.SUPABASE_ANON,
+      'authorization': 'Bearer ' + CONFIG.SUPABASE_ANON,
+      'content-type':'application/json',
+      'prefer':'return=minimal'
+    },
+    body: JSON.stringify(row)
+  }).then(r => { if(!r.ok) return r.text().then(t=>{throw new Error('Save failed ('+r.status+'). '+t);}); });
+}
+
+const progress = document.getElementById('progress');
+const barFill = document.getElementById('barFill');
+const pct = document.getElementById('pct');
+const submitBtn = document.getElementById('submit');
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  clearErr();
+
+  if(CONFIG.SUPABASE_URL.indexOf('__') === 0){
+    showErr('Uploads aren’t connected yet — check back in a little while. (Setup in progress.)');
+    return;
+  }
+
+  const name = document.getElementById('name').value.trim();
+  const relationship = document.getElementById('relationship').value.trim();
+  const text = document.getElementById('text').value.trim();
+
+  let file = mode === 'video' ? videoFile : mode === 'audio' ? audioFile : null;
+  if(!file && !text){
+    showErr(mode === 'text' ? 'Please write a few words first.' : 'Please choose or record a ' + mode + ' first — or switch to “Write”.');
+    return;
+  }
+
+  submitBtn.disabled = true; submitBtn.textContent = 'Sending…';
+  progress.classList.add('show');
+
+  try{
+    let filePath = null, kind = 'text';
+    if(file){
+      kind = mode;
+      const ext = extOf(file.name, mode === 'video' ? 'mp4' : 'm4a');
+      filePath = kind + '/' + uid() + '.' + ext;
+      barFill.style.width = '2%';
+      await uploadToStorage(file, filePath, frac => {
+        const p = Math.max(2, Math.round(frac * 100));
+        barFill.style.width = p + '%';
+        pct.textContent = 'Uploading… ' + p + '%';
+      });
+      pct.textContent = 'Finishing…';
+    }
+    await insertRow({
+      name: name || null,
+      relationship: relationship || null,
+      kind,
+      message: text || null,
+      file_path: filePath,
+      user_agent: navigator.userAgent
+    });
+
+    document.getElementById('fields').style.display = 'none';
+    document.getElementById('thanks').style.display = 'block';
+    window.scrollTo({top:0, behavior:'smooth'});
+  }catch(err){
+    showErr(err.message || 'Something went wrong. Please try again.');
+    submitBtn.disabled = false; submitBtn.textContent = 'Send to his family';
+    progress.classList.remove('show');
+  }
+});
+
+document.getElementById('again').addEventListener('click', () => location.reload());
+</script>
+</body>
+</html>
