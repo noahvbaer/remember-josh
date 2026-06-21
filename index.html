@@ -4,9 +4,9 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>Remember Josh</title>
-<meta name="description" content="Share a story about Joshua Baer for his family." />
+<meta name="description" content="Share a story about Joshua Baer with his son, Noah." />
 <meta property="og:title" content="Remember Josh" />
-<meta property="og:description" content="Plant lots of seeds, water everyone's, repeat. Share a memory of Joshua Baer for his family." />
+<meta property="og:description" content="Plant lots of seeds, water everyone's, repeat. Help Noah remember his dad, Joshua Baer." />
 <style>
   :root{
     --bg:#faf8f3; --ink:#23271f; --muted:#6b6f63; --green:#3f6b42; --green-d:#2f5232;
@@ -33,8 +33,12 @@
     margin:26px auto 30px; max-width:30ch;
   }
   .quote .mark{color:var(--gold)}
-  .lead{font-size:17px;color:#41463b;text-align:center;margin:0 auto 8px;max-width:46ch}
+  .lead{font-size:17px;color:#41463b;text-align:center;margin:0 auto 14px;max-width:48ch}
   .lead.small{font-size:15px;color:var(--muted)}
+  .prompts{max-width:48ch;margin:0 auto 6px;padding:0;list-style:none;text-align:center}
+  .prompts li{font-size:15.5px;color:#41463b;margin:6px 0}
+  .prompts li::before{content:"🌱";margin-right:8px}
+  .sign{text-align:center;font-family:Georgia,serif;font-style:italic;color:var(--green-d);font-size:16px;margin:12px 0 0}
   .card{
     background:var(--card); border:1px solid var(--line); border-radius:18px;
     padding:22px 20px; margin:30px 0 0; box-shadow:0 1px 0 rgba(0,0,0,.02);
@@ -76,7 +80,6 @@
     background:var(--green);color:#fff;font-size:17px;font-weight:700;
   }
   .btn:disabled{background:#b9c2b1;cursor:not-allowed}
-  .btn.rec{background:#8a3b3b;margin-top:14px}
   .progress{display:none;margin-top:16px}
   .progress.show{display:block}
   .bar{height:10px;background:#e9e6dd;border-radius:99px;overflow:hidden}
@@ -85,8 +88,8 @@
   .note{font-size:13px;color:var(--muted);text-align:center;margin-top:14px}
   .thanks{display:none;text-align:center;padding:18px 6px}
   .thanks h2{font-family:Georgia,serif;color:var(--green-d);font-size:26px;margin:6px 0 8px}
-  .thanks p{color:#41463b}
-  .thanks .again{display:inline-block;margin-top:14px;color:var(--green-d);font-weight:700;cursor:pointer;text-decoration:underline}
+  .thanks p{color:#41463b;max-width:42ch;margin:0 auto}
+  .thanks .again{display:inline-block;margin-top:16px;color:var(--green-d);font-weight:700;cursor:pointer;text-decoration:underline}
   .err{display:none;background:#fbeaea;color:#8a3b3b;border-radius:10px;padding:11px 13px;font-size:14px;margin-top:14px}
   .err.show{display:block}
   footer{text-align:center;color:var(--muted);font-size:13px;margin-top:34px}
@@ -108,16 +111,24 @@
 
   <p class="quote">&ldquo;<span class="mark"></span>Plant lots of seeds, water everyone&rsquo;s, repeat.&rdquo;</p>
 
-  <p class="lead">Josh touched more lives than any of us will ever fully know. If he planted a seed in yours, his family would love to hear the story.</p>
-  <p class="lead small">Record a short video (a memory, a moment, a thank-you), or leave audio or a written note. It goes privately to his family. There&rsquo;s no wrong way to do this.</p>
+  <p class="lead">My name is Noah, and I&rsquo;m Josh&rsquo;s son. My dad planted a seed in more people than I&rsquo;ll ever know &mdash; and I want to know him through all of you. If he was part of your story, I&rsquo;d love for you to tell me about it.</p>
+
+  <ul class="prompts">
+    <li>How he was your first investor</li>
+    <li>The first person who believed in you</li>
+    <li>How you met him</li>
+    <li>A story he told you &mdash; or anything at all</li>
+  </ul>
+
+  <p class="lead small">Record a video and talk to me about my dad. <strong>Take all the time you want</strong> &mdash; there&rsquo;s no length limit and no wrong way to do this. You can leave audio or write it instead. Everything comes straight to me, privately.</p>
 
   <form class="card" id="form" autocomplete="on">
     <div id="fields">
       <label>Your name <span class="opt">(optional)</span></label>
-      <input type="text" id="name" placeholder="So his family knows who shared this" />
+      <input type="text" id="name" placeholder="So I know who this story is from" />
 
-      <label>How did you know Josh? <span class="opt">(optional)</span></label>
-      <input type="text" id="relationship" placeholder="Friend, colleague, neighbor, family&hellip;" />
+      <label>How did you know my dad? <span class="opt">(optional)</span></label>
+      <input type="text" id="relationship" placeholder="A founder he backed, a friend, a colleague&hellip;" />
 
       <label>Share your story</label>
       <div class="tabs" role="tablist">
@@ -131,7 +142,7 @@
         <label class="drop" for="videoFile">
           <span class="big">🎥</span>
           <span class="t">Tap to record or choose a video</span>
-          <span class="s">Your phone will let you film a new one or pick one you&rsquo;ve already taken</span>
+          <span class="s">Film a new one or pick one you&rsquo;ve already taken &mdash; any length is welcome</span>
         </label>
         <input class="hidden-file" type="file" id="videoFile" accept="video/*" />
         <div class="chosen" id="videoChosen"></div>
@@ -152,36 +163,37 @@
 
       <!-- TEXT -->
       <div class="pane" id="pane-text">
-        <textarea id="text" placeholder="Tell the story here&hellip; a memory, something he said, a way he showed up for you."></textarea>
+        <textarea id="text" placeholder="Tell me the story here&hellip; a memory, something he said, a way he showed up for you."></textarea>
       </div>
 
-      <button type="submit" class="btn" id="submit">Send to his family</button>
+      <button type="submit" class="btn" id="submit">Send my story to Noah</button>
       <div class="progress" id="progress"><div class="bar"><i id="barFill"></i></div><div class="pct" id="pct">Uploading&hellip;</div></div>
       <div class="err" id="err"></div>
-      <p class="note">Private &amp; for his family only. Large videos may take a minute on slower connections &mdash; please keep this page open until it finishes.</p>
+      <p class="note">Private &mdash; for Noah only. Big videos upload safely even if your connection hiccups; just keep this page open until it says it&rsquo;s done.</p>
     </div>
 
     <div class="thanks" id="thanks">
       <div class="big" style="font-size:40px">🌱</div>
       <h2>Thank you.</h2>
-      <p>Your story is on its way to Josh&rsquo;s family. It means more than you know.</p>
+      <p>Your story is on its way to me. Getting to know my dad through the people he believed in means everything. &mdash; Noah</p>
       <span class="again" id="again">Share another story</span>
     </div>
   </form>
 
-  <footer>Made with love for Joshua Baer&rsquo;s family.</footer>
+  <footer>For Joshua Baer, and everyone whose seed he watered.</footer>
 </div>
 
+<script src="tus.min.js"></script>
 <script>
-/* ───────── CONFIG (filled in after Supabase is set up) ───────── */
+/* ───────── CONFIG ───────── */
 const CONFIG = {
   SUPABASE_URL: "https://zwtjfnilkvofvshpgeiz.supabase.co",
   SUPABASE_ANON: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp3dGpmbmlsa3ZvZnZzaHBnZWl6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIwNDMyNjEsImV4cCI6MjA5NzYxOTI2MX0.KS8TAZTcmOFlNzgD998g-LYoZ37pIA3y02a2bUwFR5I",
   BUCKET: "stories",
-  MAX_MB: 50,       // free plan video cap; raise to e.g. 500 if you upgrade to Pro
+  MAX_MB: 5000,     // generous cap for long videos (raise/lower freely)
   DATES: ""         // e.g. "1971 — 2026"; leave "" to hide
 };
-/* ──────────────────────────────────────────────────────────── */
+/* ─────────────────────────── */
 
 if (CONFIG.DATES) document.getElementById('dates').textContent = CONFIG.DATES;
 
@@ -197,7 +209,7 @@ tabs.forEach(t => t.addEventListener('click', () => {
 
 // File pickers + previews
 let videoFile = null, audioFile = null;
-function fmtSize(b){ return b > 1e6 ? (b/1e6).toFixed(1)+' MB' : Math.round(b/1e3)+' KB'; }
+function fmtSize(b){ return b > 1e9 ? (b/1e9).toFixed(2)+' GB' : b > 1e6 ? (b/1e6).toFixed(1)+' MB' : Math.round(b/1e3)+' KB'; }
 function hookFile(inputId, chosenId, previewId, kind){
   const input = document.getElementById(inputId);
   input.addEventListener('change', () => {
@@ -207,7 +219,7 @@ function hookFile(inputId, chosenId, previewId, kind){
     const chosen = document.getElementById(chosenId);
     const tooBig = f.size > CONFIG.MAX_MB * 1024 * 1024;
     chosen.textContent = (tooBig ? '⚠️ ' : '✓ ') + f.name + ' (' + fmtSize(f.size) + ')'
-      + (tooBig ? ' — this is over the ' + CONFIG.MAX_MB + ' MB limit. Please try a shorter clip (about 2 min), or switch to “Write” and his family will follow up for the full video.' : '');
+      + (tooBig ? ' — this one is unusually large. Try sending it, and if it won’t go, email Noah and he’ll help.' : '');
     chosen.style.background = tooBig ? '#fbeede' : '#eef3ea';
     chosen.classList.add('show');
     const prev = document.getElementById(previewId);
@@ -225,20 +237,34 @@ function clearErr(){ errEl.classList.remove('show'); }
 function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,8); }
 function extOf(name, fallback){ const m = (name||'').match(/\.([a-z0-9]+)$/i); return m ? m[1].toLowerCase() : fallback; }
 
-function uploadToStorage(file, path, onProgress){
+// Resumable upload (TUS) — survives flaky connections & handles large/long videos
+function uploadResumable(file, path, onProgress){
   return new Promise((resolve, reject) => {
-    const url = CONFIG.SUPABASE_URL + '/storage/v1/object/' + CONFIG.BUCKET + '/' + path;
-    const xhr = new XMLHttpRequest();
-    xhr.open('POST', url, true);
-    xhr.setRequestHeader('apikey', CONFIG.SUPABASE_ANON);
-    xhr.setRequestHeader('authorization', 'Bearer ' + CONFIG.SUPABASE_ANON);
-    xhr.setRequestHeader('x-upsert', 'false');
-    xhr.setRequestHeader('content-type', file.type || 'application/octet-stream');
-    xhr.upload.onprogress = e => { if(e.lengthComputable) onProgress(e.loaded / e.total); };
-    xhr.onload = () => (xhr.status >= 200 && xhr.status < 300) ? resolve(path)
-      : reject(new Error('Upload failed (' + xhr.status + '). ' + xhr.responseText));
-    xhr.onerror = () => reject(new Error('Network error during upload.'));
-    xhr.send(file);
+    const upload = new tus.Upload(file, {
+      endpoint: CONFIG.SUPABASE_URL + '/storage/v1/upload/resumable',
+      retryDelays: [0, 3000, 5000, 10000, 20000, 30000],
+      headers: {
+        authorization: 'Bearer ' + CONFIG.SUPABASE_ANON,
+        apikey: CONFIG.SUPABASE_ANON,
+        'x-upsert': 'true'
+      },
+      uploadDataDuringCreation: true,
+      removeFingerprintOnSuccess: true,
+      chunkSize: 6 * 1024 * 1024, // Supabase requires 6MB chunks
+      metadata: {
+        bucketName: CONFIG.BUCKET,
+        objectName: path,
+        contentType: file.type || 'application/octet-stream',
+        cacheControl: '3600'
+      },
+      onError: err => reject(err),
+      onProgress: (sent, total) => onProgress(sent / total),
+      onSuccess: () => resolve(path)
+    });
+    upload.findPreviousUploads().then(prev => {
+      if (prev.length) upload.resumeFromPreviousUpload(prev[0]);
+      upload.start();
+    });
   });
 }
 
@@ -265,7 +291,7 @@ form.addEventListener('submit', async (e) => {
   clearErr();
 
   if(CONFIG.SUPABASE_URL.indexOf('__') === 0){
-    showErr('Uploads aren’t connected yet — check back in a little while. (Setup in progress.)');
+    showErr('Uploads aren’t connected yet — please check back in a little while.');
     return;
   }
 
@@ -278,10 +304,6 @@ form.addEventListener('submit', async (e) => {
     showErr(mode === 'text' ? 'Please write a few words first.' : 'Please choose or record a ' + mode + ' first — or switch to “Write”.');
     return;
   }
-  if(file && file.size > CONFIG.MAX_MB * 1024 * 1024){
-    showErr('That ' + mode + ' is ' + fmtSize(file.size) + ', over the ' + CONFIG.MAX_MB + ' MB limit. Please try a shorter clip, or switch to “Write” and his family will reach out for the full video.');
-    return;
-  }
 
   submitBtn.disabled = true; submitBtn.textContent = 'Sending…';
   progress.classList.add('show');
@@ -292,11 +314,11 @@ form.addEventListener('submit', async (e) => {
       kind = mode;
       const ext = extOf(file.name, mode === 'video' ? 'mp4' : 'm4a');
       filePath = kind + '/' + uid() + '.' + ext;
-      barFill.style.width = '2%';
-      await uploadToStorage(file, filePath, frac => {
+      barFill.style.width = '2%'; pct.textContent = 'Uploading… 0%';
+      await uploadResumable(file, filePath, frac => {
         const p = Math.max(2, Math.round(frac * 100));
         barFill.style.width = p + '%';
-        pct.textContent = 'Uploading… ' + p + '%';
+        pct.textContent = p < 100 ? ('Uploading… ' + p + '%  (you can leave this page open)') : 'Finishing…';
       });
       pct.textContent = 'Finishing…';
     }
@@ -313,8 +335,8 @@ form.addEventListener('submit', async (e) => {
     document.getElementById('thanks').style.display = 'block';
     window.scrollTo({top:0, behavior:'smooth'});
   }catch(err){
-    showErr(err.message || 'Something went wrong. Please try again.');
-    submitBtn.disabled = false; submitBtn.textContent = 'Send to his family';
+    showErr((err && err.message ? err.message : 'Something went wrong') + ' — please try again, or email Noah if it keeps happening.');
+    submitBtn.disabled = false; submitBtn.textContent = 'Send my story to Noah';
     progress.classList.remove('show');
   }
 });
