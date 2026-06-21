@@ -246,7 +246,7 @@ function uploadResumable(file, path, onProgress){
       headers: {
         authorization: 'Bearer ' + CONFIG.SUPABASE_ANON,
         apikey: CONFIG.SUPABASE_ANON,
-        'x-upsert': 'true'
+        'x-upsert': 'false'
       },
       uploadDataDuringCreation: true,
       removeFingerprintOnSuccess: true,
