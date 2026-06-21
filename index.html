@@ -178,7 +178,8 @@ const CONFIG = {
   SUPABASE_URL: "https://zwtjfnilkvofvshpgeiz.supabase.co",
   SUPABASE_ANON: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp3dGpmbmlsa3ZvZnZzaHBnZWl6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIwNDMyNjEsImV4cCI6MjA5NzYxOTI2MX0.KS8TAZTcmOFlNzgD998g-LYoZ37pIA3y02a2bUwFR5I",
   BUCKET: "stories",
-  DATES: "" // e.g. "1971 — 2026"; leave "" to hide
+  MAX_MB: 50,       // free plan video cap; raise to e.g. 500 if you upgrade to Pro
+  DATES: ""         // e.g. "1971 — 2026"; leave "" to hide
 };
 /* ──────────────────────────────────────────────────────────── */
 
@@ -204,7 +205,10 @@ function hookFile(inputId, chosenId, previewId, kind){
     if(!f) return;
     if(kind==='video') videoFile = f; else audioFile = f;
     const chosen = document.getElementById(chosenId);
-    chosen.textContent = '✓ ' + f.name + ' (' + fmtSize(f.size) + ')';
+    const tooBig = f.size > CONFIG.MAX_MB * 1024 * 1024;
+    chosen.textContent = (tooBig ? '⚠️ ' : '✓ ') + f.name + ' (' + fmtSize(f.size) + ')'
+      + (tooBig ? ' — this is over the ' + CONFIG.MAX_MB + ' MB limit. Please try a shorter clip (about 2 min), or switch to “Write” and his family will follow up for the full video.' : '');
+    chosen.style.background = tooBig ? '#fbeede' : '#eef3ea';
     chosen.classList.add('show');
     const prev = document.getElementById(previewId);
     prev.src = URL.createObjectURL(f); prev.style.display = 'block';
@@ -272,6 +276,10 @@ form.addEventListener('submit', async (e) => {
   let file = mode === 'video' ? videoFile : mode === 'audio' ? audioFile : null;
   if(!file && !text){
     showErr(mode === 'text' ? 'Please write a few words first.' : 'Please choose or record a ' + mode + ' first — or switch to “Write”.');
+    return;
+  }
+  if(file && file.size > CONFIG.MAX_MB * 1024 * 1024){
+    showErr('That ' + mode + ' is ' + fmtSize(file.size) + ', over the ' + CONFIG.MAX_MB + ' MB limit. Please try a shorter clip, or switch to “Write” and his family will reach out for the full video.');
     return;
   }
 
