@@ -56,15 +56,20 @@
   input:focus,textarea:focus{outline:none;border-color:var(--green)}
   .row{display:flex;gap:10px}
   .col{flex:1;min-width:0}
-  .tabs{display:flex;gap:6px;margin:6px 0 4px}
+  .tabs{display:flex;gap:8px;margin:6px 0 4px}
   .tab{
-    flex:1; text-align:center; padding:10px 4px; border:1px solid var(--line);
-    border-radius:12px; background:#fcfbf8; cursor:pointer; font-size:13px; font-weight:600; color:#4a4f42;
+    flex:1; text-align:center; padding:11px 8px; border:1px solid var(--line);
+    border-radius:12px; background:#fcfbf8; cursor:pointer; font-size:14px; font-weight:600; color:#4a4f42;
     user-select:none;
   }
   .tab[aria-selected=true]{border-color:var(--green);background:#eef3ea;color:var(--green-d)}
-  .tab .ic{display:block;font-size:19px;margin-bottom:3px}
-  .hint{font-size:13px;color:var(--muted);text-align:center;margin:10px 2px 0;line-height:1.45}
+  .tab .ic{display:block;font-size:20px;margin-bottom:2px}
+  .hint{font-size:13px;color:var(--muted);text-align:left;margin:12px 2px 2px;line-height:1.45}
+  .attachbtn{display:block;width:100%;margin-top:16px;padding:13px;border:1.5px solid var(--line);border-radius:14px;background:#fff;color:var(--green-d);font-size:15px;font-weight:700;cursor:pointer;transition:background .15s,border-color .15s}
+  .attachbtn:hover,.attachbtn.open{border-color:var(--green);background:#f4f8ef}
+  .linkrow{display:flex;align-items:center;gap:10px;margin-top:10px}
+  .lnum{font-weight:700;color:var(--green-d);font-size:15px;min-width:22px;text-align:right;flex:none}
+  .linkrow input{flex:1;min-width:0;width:auto;margin:0}
   .pane{display:none;margin-top:14px}
   .pane.active{display:block}
   .drop{
@@ -155,7 +160,6 @@
         <div class="tab" data-tab="video" role="tab" aria-selected="true"><span class="ic">🎥</span>Video</div>
         <div class="tab" data-tab="audio" role="tab" aria-selected="false"><span class="ic">🎤</span>Audio</div>
         <div class="tab" data-tab="text"  role="tab" aria-selected="false"><span class="ic">✍️</span>Write</div>
-        <div class="tab" data-tab="links" role="tab" aria-selected="false"><span class="ic">🔗</span>Links</div>
       </div>
 
       <!-- VIDEO -->
@@ -187,10 +191,10 @@
         <textarea id="text" placeholder="Tell me the story here&hellip; a memory, something he said, a way he showed up for you."></textarea>
       </div>
 
-      <!-- LINKS -->
-      <div class="pane" id="pane-links">
-        <textarea id="links" placeholder="Paste links to tributes here — one per line.&#10;A LinkedIn post, an article, a comment… anything already written or posted about my dad."></textarea>
-        <p class="hint">One link per line — share just one, or a whole batch at once.</p>
+      <button type="button" class="attachbtn" id="attachBtn">🔗 Attach outside tributes</button>
+      <div id="linksSection" style="display:none">
+        <p class="hint">Know of a tribute someone already wrote or posted? Paste the link(s) below — each new one numbers itself. Share just one, or a whole batch.</p>
+        <div id="linkRows"></div>
       </div>
 
       <button type="submit" class="btn" id="submit">Send my story to Noah</button>
@@ -255,6 +259,40 @@ function hookFile(inputId, chosenId, previewId, kind){
 }
 hookFile('videoFile','videoChosen','videoPreview','video');
 hookFile('audioFile','audioChosen','audioPreview','audio');
+
+// Outside tributes — auto-numbered link rows
+const attachBtn = document.getElementById('attachBtn');
+const linksSection = document.getElementById('linksSection');
+const linkRows = document.getElementById('linkRows');
+function renumber(){ [...linkRows.children].forEach((row,i)=>{ row.querySelector('.lnum').textContent = (i+1) + '.'; }); }
+function addLinkRow(){
+  const row = document.createElement('div');
+  row.className = 'linkrow';
+  row.innerHTML = '<span class="lnum"></span><input type="url" class="lurl" inputmode="url" placeholder="Paste a link to a tribute" />';
+  linkRows.appendChild(row); renumber();
+  return row;
+}
+function collectLinks(){ return [...linkRows.querySelectorAll('.lurl')].map(i => i.value.trim()).filter(Boolean); }
+attachBtn.addEventListener('click', () => {
+  const open = linksSection.style.display !== 'none';
+  linksSection.style.display = open ? 'none' : 'block';
+  attachBtn.classList.toggle('open', !open);
+  if(!open){ if(!linkRows.children.length) addLinkRow(); linkRows.querySelector('.lurl').focus(); }
+});
+linkRows.addEventListener('input', e => {
+  if(!e.target.classList.contains('lurl')) return;
+  const rows = [...linkRows.children];
+  if(e.target.closest('.linkrow') === rows[rows.length-1] && e.target.value.trim()) addLinkRow();
+});
+linkRows.addEventListener('keydown', e => {
+  if(!e.target.classList.contains('lurl') || e.key !== 'Enter') return;
+  e.preventDefault();
+  const rows = [...linkRows.children];
+  const idx = rows.indexOf(e.target.closest('.linkrow'));
+  if(idx === rows.length-1 && e.target.value.trim()) addLinkRow();
+  const next = linkRows.children[idx+1];
+  if(next) next.querySelector('.lurl').focus();
+});
 
 const form = document.getElementById('form');
 const errEl = document.getElementById('err');
@@ -333,12 +371,9 @@ form.addEventListener('submit', async (e) => {
   }
 
   let file = mode === 'video' ? videoFile : mode === 'audio' ? audioFile : null;
-  let linkList = [];
-  if(mode === 'links'){
-    linkList = (document.getElementById('links').value || '').split(/[\n,]+/).map(s => s.trim()).filter(Boolean);
-    if(!linkList.length){ showErr('Please paste at least one link to a tribute.'); return; }
-  } else if(!file && !text){
-    showErr(mode === 'text' ? 'Please write a few words first.' : 'Please choose or record a ' + mode + ' first — or switch to “Write”.');
+  const linkList = collectLinks();
+  if(!file && !text && !linkList.length){
+    showErr('Please share a story — video, audio, or written — or attach at least one tribute link.');
     return;
   }
 
@@ -346,7 +381,7 @@ form.addEventListener('submit', async (e) => {
   progress.classList.add('show');
 
   try{
-    let filePath = null, kind = mode === 'links' ? 'links' : 'text';
+    let filePath = null, kind = text ? 'text' : 'links';
     if(file){
       kind = mode;
       const ext = extOf(file.name, mode === 'video' ? 'mp4' : 'm4a');
@@ -365,8 +400,8 @@ form.addEventListener('submit', async (e) => {
       phone: phone,
       name: firstName + ' ' + lastName,
       kind,
-      message: mode === 'links' ? document.getElementById('links').value.trim() : (text || null),
-      links: mode === 'links' ? linkList : null,
+      message: text || null,
+      links: linkList.length ? linkList : null,
       file_path: filePath,
       user_agent: navigator.userAgent
     });
